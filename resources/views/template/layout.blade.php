@@ -1,0 +1,9 @@
+<html>
+	<head>
+		@include('template/header')
+	</head>
+	<body>
+		@include('template/konten')
+		@include('template/footer')
+	</body>
+</html>

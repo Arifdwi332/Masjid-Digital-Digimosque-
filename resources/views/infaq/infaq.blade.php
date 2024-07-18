@@ -1,7 +1,7 @@
 @extends('template.layout')
 
 @section('judul')
-    Zakat Fitrah
+    Infaq
 @endsection
 
 @section('konten')
@@ -9,19 +9,19 @@
         <div class="row">
             <div class="col-md-12 bg-white p-4 rounded shadow">
                 <button href="#" id="openModalBtn" class="btn btn-primary mb-3 rounded" data-bs-toggle="modal"
-                    data-bs-target="#myModal">Tambah Zakat Fitrah</button>
+                    data-bs-target="#myModal">Tambah Pemasukan Infaq</button>
                 <table class="table table-bordered" id="myTable">
                     <thead>
                         <tr>
-                            <th>Nama Muzaki</th>
+                            <th>Nama Pengurus</th>
                             <th>Tanggal</th>
-                            <th>Berat Beras</th>
-                            <th>Asal Desa</th>
+                            <th>Nominal</th>
+                            <th>Keterangan</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data will be populated here -->
+
                     </tbody>
                 </table>
             </div>
@@ -29,32 +29,32 @@
     </div>
 
     <!-- Modal -->
-    <div id="myModal" class="modal fade" tabindex="-1" aria-labelledby="zakatModalLabel" aria-hidden="true">
+    <div id="myModal" class="modal fade" tabindex="-1" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Tambah Zakat Fitrah</h5>
+                    <h5 class="modal-title" id="modalTitle">Tambah Pemasukan Infaq</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="formZakat">
+                    <form id="formInfaq">
                         @csrf
 
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Nama Muzaki</label>
-                            <input type="text" class="form-control" id="nama" name="nama">
+                            <label for="nama_pengurus" class="form-label">Nama Pengurus</label>
+                            <input type="text" class="form-control" id="nama_pengurus" name="nama_pengurus">
                         </div>
                         <div class="mb-3">
                             <label for="tanggal" class="form-label">Tanggal</label>
                             <input type="date" class="form-control" id="tanggal" name="tanggal">
                         </div>
                         <div class="mb-3">
-                            <label for="berat" class="form-label">Berat Beras (kg)</label>
-                            <input type="number" class="form-control" id="berat" name="berat">
+                            <label for="nominal" class="form-label">Nominal</label>
+                            <input type="number" class="form-control" id="nominal" name="nominal">
                         </div>
                         <div class="mb-3">
-                            <label for="asal" class="form-label">Asal Desa</label>
-                            <input type="text" class="form-control" id="asal" name="asal">
+                            <label for="keterangan" class="form-label">Keterangan</label>
+                            <input type="text" class="form-control" id="keterangan" name="keterangan">
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -72,31 +72,31 @@
     <script src="//cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-            var id;
+
 
 
             $('#myTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('zakatAjax') }}",
+                    url: "{{ route('infaqAjax.index') }}",
                     type: 'GET',
                 },
                 columns: [{
-                        data: 'nama',
-                        name: 'nama'
+                        data: 'nama_pengurus',
+                        name: 'nama_pengurus'
                     },
                     {
                         data: 'tanggal',
                         name: 'tanggal'
                     },
                     {
-                        data: 'berat',
-                        name: 'berat'
+                        data: 'nominal',
+                        name: 'nominal'
                     },
                     {
-                        data: 'asal',
-                        name: 'asal'
+                        data: 'keterangan',
+                        name: 'keterangan'
                     },
                     {
                         data: 'id',
@@ -111,9 +111,9 @@
 
 
             $('#openModalBtn').click(function() {
-                $('#formZakat')[0].reset();
-                $('#modalTitle').text('Tambah Zakat Fitrah');
                 id = null;
+                $('#modalTitle').text('Tambah Pemasukan Infaq');
+
                 $('#myModal').modal('show');
             });
 
@@ -122,15 +122,15 @@
                 e.preventDefault();
                 id = $(this).data('id');
                 $.ajax({
-                    url: "{{ route('zakatAjax') }}/" + id + "/edit",
+                    url: "{{ route('infaqAjax.edit', ':id') }}".replace(':id', id),
                     type: 'GET',
                     success: function(response) {
                         if (response) {
-                            $('#nama').val(response.nama);
+                            $('#nama_pengurus').val(response.nama_pengurus);
                             $('#tanggal').val(response.tanggal);
-                            $('#berat').val(response.berat);
-                            $('#asal').val(response.asal);
-                            $('#modalTitle').text('Edit Zakat Fitrah');
+                            $('#nominal').val(response.nominal);
+                            $('#keterangan').val(response.keterangan);
+                            $('#modalTitle').text('Edit Pemasukan Infaq');
                             $('#myModal').modal('show');
                         } else {
                             alert('Data tidak ditemukan');
@@ -145,20 +145,20 @@
             });
 
 
-            $('#formZakat').submit(function(event) {
+            $('#formInfaq').submit(function(event) {
                 event.preventDefault();
                 simpan();
             });
 
             function simpan() {
                 var formData = {
-                    nama: $('#nama').val(),
+                    nama_pengurus: $('#nama_pengurus').val(),
                     tanggal: $('#tanggal').val(),
-                    berat: $('#berat').val(),
-                    asal: $('#asal').val(),
+                    nominal: $('#nominal').val(),
+                    keterangan: $('#keterangan').val(),
                 };
 
-                var url = id ? "{{ route('zakatAjax.update', ':id') }}" : "{{ route('zakatAjax.store') }}";
+                var url = id ? "{{ route('infaqAjax.update', ':id') }}" : "{{ route('infaqAjax.store') }}";
                 url = url.replace(':id', id);
 
                 var method = id ? 'PUT' : 'POST';
@@ -188,16 +188,14 @@
             if (confirm('Anda yakin ingin menghapus data ini?')) {
                 id = $(this).data('id');
                 $.ajax({
-                    url: "{{ route('zakatAjax.delete', ':id') }}".replace(':id', id),
+                    url: "{{ route('infaqAjax.delete', ':id') }}".replace(':id', id),
                     type: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
-
                         alert('Data berhasil dihapus!');
-                        table.ajax.reload();
-
+                        $('#myTable').DataTable().ajax.reload();
                     },
                     error: function(response) {
                         alert('Error: ' + response.responseText);

@@ -118,7 +118,7 @@
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"> <a class="nav-link" href="/zakat">Zakat Fitrah</a></li>
                                 <li class="nav-item"> <a class="nav-link" href="/pengeluaranzakat">Pengerluaran</a></li>
-                                <li class="nav-item"> <a class="nav-link" href="#">Laporan</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="/reportzakat">Laporan</a></li>
                             </ul>
                         </div>
                     </li>
@@ -131,17 +131,15 @@
                         </a>
                         <div class="collapse" id="ui-basic">
                             <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link"
-                                        href="pages/ui-features/buttons.html">Pemasukan</a></li>
-                                <li class="nav-item"> <a class="nav-link"
-                                        href="pages/ui-features/dropdowns.html">Pengerluaran</a></li>
-                                <li class="nav-item"> <a class="nav-link"
-                                        href="pages/ui-features/typography.html">Laporan</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="/infaq">Pemasukan</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="/pengeluaraninfaq">Pengerluaran</a>
+                                </li>
+                                <li class="nav-item"> <a class="nav-link" href="/reportinfaq">Laporan</a></li>
                             </ul>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="/perkakas">
                             <i class="typcn typcn-spanner menu-icon"></i>
                             <span class="menu-title">Perkakas</span>
                         </a>

@@ -1,7 +1,7 @@
 @extends('template.layout')
 
 @section('judul')
-    Zakat Fitrah
+    Perkakas
 @endsection
 
 @section('konten')
@@ -9,14 +9,12 @@
         <div class="row">
             <div class="col-md-12 bg-white p-4 rounded shadow">
                 <button href="#" id="openModalBtn" class="btn btn-primary mb-3 rounded" data-bs-toggle="modal"
-                    data-bs-target="#myModal">Tambah Zakat Fitrah</button>
-                <table class="table table-bordered" id="myTable">
+                    data-bs-target="#myModal">Tambah Perkakas</button>
+                <table class="table table-bordered" id="perkakasTable">
                     <thead>
                         <tr>
-                            <th>Nama Muzaki</th>
-                            <th>Tanggal</th>
-                            <th>Berat Beras</th>
-                            <th>Asal Desa</th>
+                            <th>Nama Item</th>
+                            <th>Jumlah</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -29,32 +27,23 @@
     </div>
 
     <!-- Modal -->
-    <div id="myModal" class="modal fade" tabindex="-1" aria-labelledby="zakatModalLabel" aria-hidden="true">
+    <div id="myModal" class="modal fade" tabindex="-1" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Tambah Zakat Fitrah</h5>
+                    <h5 class="modal-title" id="modalTitle">Tambah Perkakas</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="formZakat">
+                    <form id="formPerkakas">
                         @csrf
-
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Nama Muzaki</label>
-                            <input type="text" class="form-control" id="nama" name="nama">
+                            <label for="nama_item" class="form-label">Nama Item</label>
+                            <input type="text" class="form-control" id="nama_item" name="nama_item">
                         </div>
                         <div class="mb-3">
-                            <label for="tanggal" class="form-label">Tanggal</label>
-                            <input type="date" class="form-control" id="tanggal" name="tanggal">
-                        </div>
-                        <div class="mb-3">
-                            <label for="berat" class="form-label">Berat Beras (kg)</label>
-                            <input type="number" class="form-control" id="berat" name="berat">
-                        </div>
-                        <div class="mb-3">
-                            <label for="asal" class="form-label">Asal Desa</label>
-                            <input type="text" class="form-control" id="asal" name="asal">
+                            <label for="jumlah" class="form-label">Jumlah</label>
+                            <input type="number" class="form-control" id="jumlah" name="jumlah">
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -72,65 +61,52 @@
     <script src="//cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-            var id;
 
-
-            $('#myTable').DataTable({
+            $('#perkakasTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('zakatAjax') }}",
+                    url: "{{ route('perkakas.index') }}",
                     type: 'GET',
                 },
                 columns: [{
-                        data: 'nama',
-                        name: 'nama'
+                        data: 'nama_item',
+                        name: 'nama_item'
                     },
                     {
-                        data: 'tanggal',
-                        name: 'tanggal'
-                    },
-                    {
-                        data: 'berat',
-                        name: 'berat'
-                    },
-                    {
-                        data: 'asal',
-                        name: 'asal'
+                        data: 'jumlah',
+                        name: 'jumlah'
                     },
                     {
                         data: 'id',
                         name: 'aksi',
                         render: function(data, type, row) {
                             return `<a class="btn btn-primary btn-sm mx-1 btnEdit" href="#" data-id="${data}">Edit</a>
-                                    <a class="btn btn-danger btn-sm mx-1 btnDel" href="#" data-id="${data}">Hapus</a>`;
+                                <a class="btn btn-danger btn-sm mx-1 btnDel" href="#" data-id="${data}">Hapus</a>`;
                         }
                     }
                 ]
             });
 
-
             $('#openModalBtn').click(function() {
-                $('#formZakat')[0].reset();
-                $('#modalTitle').text('Tambah Zakat Fitrah');
                 id = null;
+                $('#modalTitle').text('Tambah Perkakas');
+                $('#formPerkakas')[0].reset();
                 $('#myModal').modal('show');
             });
 
 
-            $('#myTable').on('click', '.btnEdit', function(e) {
+            $('#perkakasTable').on('click', '.btnEdit', function(e) {
                 e.preventDefault();
                 id = $(this).data('id');
                 $.ajax({
-                    url: "{{ route('zakatAjax') }}/" + id + "/edit",
+                    url: "{{ route('perkakas.edit', ':id') }}".replace(':id', id),
                     type: 'GET',
                     success: function(response) {
                         if (response) {
-                            $('#nama').val(response.nama);
-                            $('#tanggal').val(response.tanggal);
-                            $('#berat').val(response.berat);
-                            $('#asal').val(response.asal);
-                            $('#modalTitle').text('Edit Zakat Fitrah');
+                            $('#nama_item').val(response.nama_item);
+                            $('#jumlah').val(response.jumlah);
+                            $('#modalTitle').text('Edit Perkakas');
                             $('#myModal').modal('show');
                         } else {
                             alert('Data tidak ditemukan');
@@ -141,24 +117,20 @@
                         console.error(response);
                     }
                 });
-
             });
 
-
-            $('#formZakat').submit(function(event) {
+            $('#formPerkakas').submit(function(event) {
                 event.preventDefault();
                 simpan();
             });
 
             function simpan() {
                 var formData = {
-                    nama: $('#nama').val(),
-                    tanggal: $('#tanggal').val(),
-                    berat: $('#berat').val(),
-                    asal: $('#asal').val(),
+                    nama_item: $('#nama_item').val(),
+                    jumlah: $('#jumlah').val(),
                 };
 
-                var url = id ? "{{ route('zakatAjax.update', ':id') }}" : "{{ route('zakatAjax.store') }}";
+                var url = id ? "{{ route('perkakas.update', ':id') }}" : "{{ route('perkakas.store') }}";
                 url = url.replace(':id', id);
 
                 var method = id ? 'PUT' : 'POST';
@@ -181,30 +153,29 @@
                     }
                 });
             }
-        });
 
-        $('#myTable').on('click', '.btnDel', function(e) {
-            e.preventDefault();
-            if (confirm('Anda yakin ingin menghapus data ini?')) {
-                id = $(this).data('id');
-                $.ajax({
-                    url: "{{ route('zakatAjax.delete', ':id') }}".replace(':id', id),
-                    type: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(response) {
 
-                        alert('Data berhasil dihapus!');
-                        table.ajax.reload();
-
-                    },
-                    error: function(response) {
-                        alert('Error: ' + response.responseText);
-                        console.error(response);
-                    }
-                });
-            }
+            $('#perkakasTable').on('click', '.btnDel', function(e) {
+                e.preventDefault();
+                if (confirm('Anda yakin ingin menghapus data ini?')) {
+                    id = $(this).data('id');
+                    $.ajax({
+                        url: "{{ route('perkakas.delete', ':id') }}".replace(':id', id),
+                        type: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            alert('Data berhasil dihapus!');
+                            table.ajax.reload();
+                        },
+                        error: function(response) {
+                            alert('Error: ' + response.responseText);
+                            console.error(response);
+                        }
+                    });
+                }
+            });
         });
     </script>
 @endsection

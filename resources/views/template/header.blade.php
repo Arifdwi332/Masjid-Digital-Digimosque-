@@ -102,7 +102,7 @@
                         <p class="sidebar-menu-title">Dash menu</p>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="/">
                             <i class="typcn typcn-device-desktop menu-icon"></i>
                             <span class="menu-title">Dashboard <span class="badge badge-primary ml-3">New</span></span>
                         </a>

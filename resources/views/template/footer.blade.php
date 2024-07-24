@@ -23,8 +23,10 @@
           <script src="{{ url('celestialAdmin/template/vendors/js/vendor.bundle.base.js') }}"></script>
           <meta name="csrf-token" content="{{ csrf_token() }}">
           <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-          <script src="//cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
           <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+          <script src="//cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+
 
           </body>
 

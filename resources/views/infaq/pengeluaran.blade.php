@@ -13,7 +13,7 @@
                 <table class="table table-bordered" id="myTable">
                     <thead>
                         <tr>
-                            <th>Nama Pengurus</th> <!-- Ubah nama kolom -->
+                            <th>Nama Pengurus</th>
                             <th>Tanggal</th>
                             <th>Nominal</th>
                             <th>Keterangan</th>
@@ -41,9 +41,10 @@
                         @csrf
 
                         <div class="mb-3">
-                            <label for="nama_pengurus" class="form-label">Nama Pengurus</label> <!-- Ubah nama kolom -->
-                            <input type="text" class="form-control" id="nama_pengurus" name="nama_pengurus">
-                            <!-- Ubah nama kolom -->
+                            <label for="nama_pengurus" class="form-label">Nama Pengurus</label>
+                            <select class="form-control" id="nama_pengurus" name="nama_pengurus">
+                                <!-- Options will be populated by Select2 -->
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="tanggal" class="form-label">Tanggal</label>
@@ -69,12 +70,32 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <!-- DataTables -->
     <script src="//cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-
-
+            // Initialize Select2 for nama_pengurus field
+            $('#nama_pengurus').select2({
+                placeholder: 'Pilih Nama Pengurus',
+                ajax: {
+                    url: '{{ route('users.getdata') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.nama_pengurus
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
 
             $('#myTable').DataTable({
                 processing: true,
@@ -93,7 +114,14 @@
                     },
                     {
                         data: 'nominal',
-                        name: 'nominal'
+                        name: 'nominal',
+                        render: function(data, type, row) {
+                            // Format nominal dengan ribuan pemisah
+                            return parseFloat(data).toLocaleString('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR'
+                            });
+                        }
                     },
                     {
                         data: 'keterangan',
@@ -110,14 +138,11 @@
                 ]
             });
 
-
             $('#openModalBtn').click(function() {
-
-                $('#modalTitle').text('Tambah Pengeluaran Infaq');
                 id = null;
+                $('#modalTitle').text('Tambah Pengeluaran Infaq');
                 $('#myModal').modal('show');
             });
-
 
             $('#myTable').on('click', '.btnEdit', function(e) {
                 e.preventDefault();
@@ -126,7 +151,7 @@
                     url: "{{ route('pengeluaranInfaqAjax.edit', ':id') }}".replace(':id', id),
                     success: function(response) {
                         if (response) {
-                            $('#nama_pengurus').val(response.nama_pengurus);
+                            $('#nama_pengurus').val(response.nama_pengurus).trigger('change');
                             $('#tanggal').val(response.tanggal);
                             $('#nominal').val(response.nominal);
                             $('#keterangan').val(response.keterangan);
@@ -141,9 +166,7 @@
                         console.error(response);
                     }
                 });
-
             });
-
 
             $('#formPengeluaranInfaq').submit(function(event) {
                 event.preventDefault();
@@ -152,7 +175,7 @@
 
             function simpan() {
                 var formData = {
-                    nama_pengurus: $('#nama_pengurus').val(),
+                    nama_pengurus: $('#nama_pengurus option:selected').text(),
                     tanggal: $('#tanggal').val(),
                     nominal: $('#nominal').val(),
                     keterangan: $('#keterangan').val(),
@@ -174,28 +197,6 @@
                     success: function(response) {
                         alert('Data berhasil disimpan!');
                         $('#myModal').modal('hide');
-                        table.ajax.reload();
-                    },
-                    error: function(response) {
-                        alert('Error: ' + response.responseText);
-                        console.error(response);
-                    }
-                });
-            }
-        });
-
-        $('#myTable').on('click', '.btnDel', function(e) {
-            e.preventDefault();
-            if (confirm('Anda yakin ingin menghapus data ini?')) {
-                id = $(this).data('id');
-                $.ajax({
-                    url: "{{ route('pengeluaranInfaqAjax.delete', ':id') }}".replace(':id', id),
-                    type: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(response) {
-                        alert('Data berhasil dihapus!');
                         $('#myTable').DataTable().ajax.reload();
                     },
                     error: function(response) {
@@ -204,6 +205,28 @@
                     }
                 });
             }
+
+            $('#myTable').on('click', '.btnDel', function(e) {
+                e.preventDefault();
+                if (confirm('Anda yakin ingin menghapus data ini?')) {
+                    id = $(this).data('id');
+                    $.ajax({
+                        url: "{{ route('pengeluaranInfaqAjax.delete', ':id') }}".replace(':id', id),
+                        type: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            alert('Data berhasil dihapus!');
+                            $('#myTable').DataTable().ajax.reload();
+                        },
+                        error: function(response) {
+                            alert('Error: ' + response.responseText);
+                            console.error(response);
+                        }
+                    });
+                }
+            });
         });
     </script>
 @endsection

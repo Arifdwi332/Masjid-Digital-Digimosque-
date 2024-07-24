@@ -13,9 +13,10 @@
                 <table class="table table-bordered" id="myTable">
                     <thead>
                         <tr>
+                            <th>Nama Pengurus</th>
                             <th>Nama Muzaki</th>
                             <th>Tanggal</th>
-                            <th>Berat Beras</th>
+                            <th>Jumlah Orang</th>
                             <th>Asal Desa</th>
                             <th>Aksi</th>
                         </tr>
@@ -39,22 +40,31 @@
                 <div class="modal-body">
                     <form id="formZakat">
                         @csrf
-
+                        <div class="mb-3" style="margin-bottom: 10px;">
+                            <label for="nama_pengurus" class="form-label">Nama Pengurus</label>
+                            <select class="form-control" id="nama_pengurus" name="nama_pengurus"></select>
+                        </div>
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Nama Muzaki</label>
-                            <input type="text" class="form-control" id="nama" name="nama">
+                            <label for="nama_muzaki" class="form-label">Nama Muzaki</label>
+                            <input type="text" class="form-control" id="nama_muzaki" name="nama_muzaki">
                         </div>
                         <div class="mb-3">
                             <label for="tanggal" class="form-label">Tanggal</label>
                             <input type="date" class="form-control" id="tanggal" name="tanggal">
                         </div>
                         <div class="mb-3">
-                            <label for="berat" class="form-label">Berat Beras (kg)</label>
-                            <input type="number" class="form-control" id="berat" name="berat">
+                            <label for="jumlah_orang" class="form-label">Jumlah Orang</label>
+                            <input type="number" class="form-control" id="jumlah_orang" name="jumlah_orang">
                         </div>
                         <div class="mb-3">
                             <label for="asal" class="form-label">Asal Desa</label>
-                            <input type="text" class="form-control" id="asal" name="asal">
+                            <select class="form-control" id="asal" name="asal">
+                                <option value="Barepan">Barepan</option>
+                                <option value="Setran">Setran</option>
+                                <option value="Ngetal">Ngetal</option>
+                                <option value="Pringgan">Pringgan</option>
+                                <option value="Luar">Luar</option>
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -64,18 +74,37 @@
     </div>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <!-- jQuery -->
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- DataTables -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="//cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+
     <script>
         $(document).ready(function() {
+            // Initialize Select2
+            $('#nama_pengurus').select2({
+                placeholder: 'Pilih Nama Pengurus',
+                ajax: {
+                    url: '{{ route('users.getdata') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.id,
+                                    text: item.nama_pengurus
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
             var id;
-
-
-            $('#myTable').DataTable({
+            var table = $('#myTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
@@ -83,16 +112,20 @@
                     type: 'GET',
                 },
                 columns: [{
-                        data: 'nama',
-                        name: 'nama'
+                        data: 'nama_pengurus',
+                        name: 'nama_pengurus'
+                    },
+                    {
+                        data: 'nama_muzaki',
+                        name: 'nama_muzaki'
                     },
                     {
                         data: 'tanggal',
                         name: 'tanggal'
                     },
                     {
-                        data: 'berat',
-                        name: 'berat'
+                        data: 'jumlah_orang',
+                        name: 'jumlah_orang'
                     },
                     {
                         data: 'asal',
@@ -109,14 +142,11 @@
                 ]
             });
 
-
             $('#openModalBtn').click(function() {
-                $('#formZakat')[0].reset();
                 $('#modalTitle').text('Tambah Zakat Fitrah');
                 id = null;
                 $('#myModal').modal('show');
             });
-
 
             $('#myTable').on('click', '.btnEdit', function(e) {
                 e.preventDefault();
@@ -126,9 +156,10 @@
                     type: 'GET',
                     success: function(response) {
                         if (response) {
-                            $('#nama').val(response.nama);
+                            $('#nama_pengurus').val(response.nama_pengurus);
+                            $('#nama_muzaki').val(response.nama_muzaki);
                             $('#tanggal').val(response.tanggal);
-                            $('#berat').val(response.berat);
+                            $('#jumlah_orang').val(response.jumlah_orang);
                             $('#asal').val(response.asal);
                             $('#modalTitle').text('Edit Zakat Fitrah');
                             $('#myModal').modal('show');
@@ -141,9 +172,7 @@
                         console.error(response);
                     }
                 });
-
             });
-
 
             $('#formZakat').submit(function(event) {
                 event.preventDefault();
@@ -152,9 +181,10 @@
 
             function simpan() {
                 var formData = {
-                    nama: $('#nama').val(),
+                    nama_pengurus: $('#nama_pengurus option:selected').text(),
+                    nama_muzaki: $('#nama_muzaki').val(),
                     tanggal: $('#tanggal').val(),
-                    berat: $('#berat').val(),
+                    jumlah_orang: $('#jumlah_orang').val(),
                     asal: $('#asal').val(),
                 };
 
@@ -172,8 +202,10 @@
                     },
                     success: function(response) {
                         alert('Data berhasil disimpan!');
-                        $('#myModal').modal('hide');
-                        table.ajax.reload();
+
+                        $('#myModal').on('hidden.bs.modal', function(e) {
+                            table.ajax.reload();
+                        });
                     },
                     error: function(response) {
                         alert('Error: ' + response.responseText);
@@ -181,30 +213,28 @@
                     }
                 });
             }
-        });
 
-        $('#myTable').on('click', '.btnDel', function(e) {
-            e.preventDefault();
-            if (confirm('Anda yakin ingin menghapus data ini?')) {
-                id = $(this).data('id');
-                $.ajax({
-                    url: "{{ route('zakatAjax.delete', ':id') }}".replace(':id', id),
-                    type: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(response) {
-
-                        alert('Data berhasil dihapus!');
-                        table.ajax.reload();
-
-                    },
-                    error: function(response) {
-                        alert('Error: ' + response.responseText);
-                        console.error(response);
-                    }
-                });
-            }
+            $('#myTable').on('click', '.btnDel', function(e) {
+                e.preventDefault();
+                if (confirm('Anda yakin ingin menghapus data ini?')) {
+                    id = $(this).data('id');
+                    $.ajax({
+                        url: "{{ route('zakatAjax.delete', ':id') }}".replace(':id', id),
+                        type: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            alert('Data berhasil dihapus!');
+                            table.ajax.reload();
+                        },
+                        error: function(response) {
+                            alert('Error: ' + response.responseText);
+                            console.error(response);
+                        }
+                    });
+                }
+            });
         });
     </script>
 @endsection

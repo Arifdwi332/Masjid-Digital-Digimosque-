@@ -13,29 +13,26 @@
                         <tr>
                             <th>Nama Pengurus</th>
                             <th>Tanggal</th>
-                            <th>Nominal</th>
                             <th>Keterangan</th>
                             <th>Jenis</th>
+                            <th>Nominal</th>
                         </tr>
                     </thead>
                     <tbody>
-
+                        <!-- Data will be populated by DataTables -->
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="2">Total Pengeluaran:</th>
-
-                            <th colspan="2"></th>
+                            <th colspan="4">Total Pemasukan:</th>
+                            <th id="totalPemasukan"></th>
                         </tr>
                         <tr>
-                            <th colspan="2">Total Pemasukan:</th>
-
-                            <th colspan="2"></th>
+                            <th colspan="4">Total Pengeluaran:</th>
+                            <th id="totalPengeluaran"></th>
                         </tr>
                         <tr>
-                            <th colspan="2">Total Infaq Tersisa:</th>
-
-                            <th colspan="2"></th>
+                            <th colspan="4">Total Infaq Tersisa:</th>
+                            <th id="totalInfaqTersisa"></th>
                         </tr>
                     </tfoot>
                 </table>
@@ -49,13 +46,23 @@
     <script src="//cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-
             $('#myTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
                     url: "{{ route('report.data') }}",
                     type: 'GET',
+                    dataSrc: function(json) {
+                        // Update totals
+                        $('#totalPemasukan').html(formatCurrency(json.totalPemasukan));
+                        $('#totalPengeluaran').html(formatCurrency(json.totalPengeluaran));
+                        $('#totalInfaqTersisa').html(formatCurrency(json.totalInfaqTersisa));
+                        // Format nominal values and return the data
+                        json.data.forEach(function(item) {
+                            item.nominal = formatCurrency(item.nominal);
+                        });
+                        return json.data;
+                    }
                 },
                 columns: [{
                         data: 'nama_pengurus',
@@ -66,20 +73,27 @@
                         name: 'tanggal'
                     },
                     {
-                        data: 'nominal',
-                        name: 'nominal'
-                    },
-                    {
                         data: 'keterangan',
                         name: 'keterangan'
                     },
                     {
                         data: 'jenis',
                         name: 'jenis'
+                    },
+                    {
+                        data: 'nominal',
+                        name: 'nominal'
                     }
-                ],
-
+                ]
             });
+
+            // Function to format number as currency
+            function formatCurrency(value) {
+                return parseFloat(value).toLocaleString('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR'
+                });
+            }
         });
     </script>
 @endsection

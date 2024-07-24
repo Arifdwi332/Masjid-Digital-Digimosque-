@@ -6,13 +6,11 @@ use App\Http\Controllers\infaqController;
 use App\Http\Controllers\pengeluaraninfaqController;
 use App\Http\Controllers\reportInfaqController;
 use App\Http\Controllers\perkakasController;
-use App\Http\Controllers\PengeluaranZakatController;
-use App\Http\Controllers\ReportZakatController;
+use App\Http\Controllers\UserController;
 
+// Route untuk menampilkan view dengan data dari controller
+Route::get('/', [ReportInfaqController::class, 'showHome']);
 
-Route::get('/', function () {
-    return view('home', ['name' => 'Arif']);
-});
 
 Route::get('/zakat', function () {
     return view('zakat.zakat', ['name' => 'Arif']);
@@ -68,19 +66,14 @@ Route::put('perkakas/{id}', [PerkakasController::class, 'update'])->name('perkak
 Route::delete('perkakas/{id}', [PerkakasController::class, 'delete'])->name('perkakas.delete');
 
 
-Route::get('/pengeluaranzakat', function () {
-    return view('zakat.pengeluaran', ['name' => 'Arif']);
+Route::get('/users', function () {
+    return view('user.user', ['name' => 'Arif']);
 });
+Route::get('usersAjax', [UserController::class, 'index'])->name('userAjax.index');
+// Route::get('users/get-users', [UserController::class, 'getUsers'])->name('userAjax.getUsers');
+Route::post('users', [UserController::class, 'store'])->name('userAjax.store');
+Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('userAjax.edit');
+Route::put('users/{id}', [UserController::class, 'update'])->name('userAjax.update');
+Route::delete('users/{id}', [UserController::class, 'destroy'])->name('userAjax.delete');
 
-Route::get('/pengeluaran-zakat', [PengeluaranZakatController::class, 'index'])->name('pengeluaranZakatAjax.index');
-Route::post('pengeluaran-zakat/store', [PengeluaranZakatController::class, 'store'])->name('pengeluaranZakatAjax.store');
-Route::get('pengeluaran-zakat/{id}/edit', [PengeluaranZakatController::class, 'edit'])->name('pengeluaranZakatAjax.edit');
-Route::put('pengeluaran-zakat/{id}', [PengeluaranZakatController::class, 'update'])->name('pengeluaranZakatAjax.update');
-Route::delete('pengeluaran-zakat/{id}', [PengeluaranZakatController::class, 'destroy'])->name('pengeluaranZakatAjax.delete');
-
-
-Route::get('/reportzakat', function () {
-    return view('zakat.report', ['name' => 'Arif']);
-});
-
-Route::get('report-zakat/data', [ReportZakatController::class, 'getData'])->name('report.datazakat');
+Route::get('/getUsersData', [UserController::class, 'getUsers'])->name('users.getdata');

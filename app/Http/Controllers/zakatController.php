@@ -10,7 +10,7 @@ class ZakatController extends Controller
 {
     public function index()
     {
-        $data = zakat::latest()->get();
+        $data = Zakat::latest()->get();
         return DataTables::of($data)
             ->rawColumns(['aksi'])
             ->make(true);
@@ -19,9 +19,10 @@ class ZakatController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required',
+            'nama_pengurus' => 'required',
+            'nama_muzaki' => 'required',
             'tanggal' => 'required|date',
-            'berat' => 'required|',
+            'jumlah_orang' => 'required',
             'asal' => 'required',
         ]);
 
@@ -39,9 +40,10 @@ class ZakatController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama' => 'required',
+            'nama_pengurus' => 'required',
+            'nama_muzaki' => 'required',
             'tanggal' => 'required|date',
-            'berat' => 'required|',
+            'jumlah_orang' => 'required',
             'asal' => 'required',
         ]);
 
@@ -50,6 +52,7 @@ class ZakatController extends Controller
 
         return response()->json(['success' => 'Data berhasil diupdate.']);
     }
+
     public function destroy($id)
     {
         $zakat = Zakat::findOrFail($id);

@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('zakat', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
+            $table->string('nama_pengurus');
+            $table->string('nama_muzaki');
             $table->string('tanggal');
-            $table->boolean('berat');
+            $table->boolean('jumlah_orang');
             $table->string('asal');
             $table->timestamps();
         });

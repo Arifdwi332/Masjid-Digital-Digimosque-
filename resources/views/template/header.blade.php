@@ -2,25 +2,26 @@
 <html lang="en">
 
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>@yield('judul')</title>
-    <!-- base:css -->
-    <link rel="stylesheet" href="{{ url('celestialAdmin/template/vendors/typicons.font/font/typicons.css') }}">
-    <link rel="stylesheet" href="{{ url('celestialAdmin/template/vendors/css/vendor.bundle.base.css') }}">
-    <!-- endinject -->
-    <!-- plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <link rel="stylesheet" href="{{ url('celestialAdmin/template/css/vertical-layout-light/style.css') }}">
-    <!-- endinject -->
-    <link rel="shortcut icon" href="{{ url('celestialAdmin/template/images/favicon.png') }}" />
-    <link rel="stylesheet" href="//cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+
+    <head>
+        <!-- Meta tags, title, dan lain-lain -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>@yield('judul')</title>
+        <!-- CSS -->
+        <link rel="stylesheet" href="{{ url('celestialAdmin/template/vendors/typicons.font/font/typicons.css') }}">
+        <link rel="stylesheet" href="{{ url('celestialAdmin/template/vendors/css/vendor.bundle.base.css') }}">
+        <link rel="stylesheet" href="{{ url('celestialAdmin/template/css/vertical-layout-light/style.css') }}">
+        <link rel="stylesheet" href="//cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="//cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+        <link rel="stylesheet" href="app.css">
+        <!-- End CSS -->
 
 
 
-</head>
+    </head>
 
 <body>
     <div class="container-scroller">
@@ -40,7 +41,7 @@
                     <li class="nav-item nav-profile dropdown">
                         <a class="nav-link dropdown-toggle  pl-0 pr-0" href="#" data-toggle="dropdown"
                             id="profileDropdown">
-                            <span class="nav-profile-name">Evan Morales</span>
+                            <span class="nav-profile-name">Arif</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                             aria-labelledby="profileDropdown">
@@ -117,8 +118,7 @@
                         <div class="collapse" id="zakat">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item"> <a class="nav-link" href="/zakat">Zakat Fitrah</a></li>
-                                <li class="nav-item"> <a class="nav-link" href="/pengeluaranzakat">Pengerluaran</a></li>
-                                <li class="nav-item"> <a class="nav-link" href="/reportzakat">Laporan</a></li>
+
                             </ul>
                         </div>
                     </li>
@@ -145,7 +145,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="/users">
                             <i class="typcn typcn-user menu-icon"></i>
                             <span class="menu-title">User</span>
                         </a>
